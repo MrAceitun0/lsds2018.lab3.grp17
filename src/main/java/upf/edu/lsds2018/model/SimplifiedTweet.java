@@ -1,5 +1,7 @@
 package upf.edu.lsds2018.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -34,11 +36,7 @@ public class SimplifiedTweet implements Serializable {
         this.timestampMs = timestampMs;
     }
     
-    /*Getters*/
-    public long getTwittID() {
-		return tweetId;
-	}
-    
+    /*Getters*/  
     public String getText() {
 		return text;
 	}
@@ -97,24 +95,29 @@ public class SimplifiedTweet implements Serializable {
 		    private final long timestampMs;		    // seconds from epoch ('timestamp_ms')
     	 */
     	
-    	JsonParser jp = new JsonParser();
-    	JsonElement je = jp.parse(jsonStr);
-    	JsonObject jo = je.getAsJsonObject();
-    	
-    	long tID;
-    	
-    	if (jo.has("id")) {
-	    	 tID = jo.get("id").getAsLong();; // cast method
-    	}
-    	
-    	return null;
+    	String json = jsonStr;
+    	Gson gson = new Gson();
+        SimplifiedTweet jo = gson.fromJson(json, SimplifiedTweet.class);
+        Optional<SimplifiedTweet> st;
+        
+        if(jo.getTweetId() != 0L && jo.getUserId() != 0L && jo.getFollowersCount() != 0L && jo.isRetweeted() != true && jo.isRetweeted() != false && jo.getTimestampMs() != 0L)
+        {
+        	st = Optional.ofNullable(jo);
+        }
+        else
+        {
+        	st = Optional.empty();
+        }
+        
+        return st;
     }
 
     @Override
     public String toString() {
-        // IMPLEMENT ME
+        String st = "Tweet ID: " + getTweetId() + "\nUser ID: "+ getUserId() + "\nUser Name: "+ getUserName() + "\nText: "+getText() + 
+        		"\nFollowers: "+getFollowersCount() + "\nIs Retweeted: " + isRetweeted() + "\nRetweeted User ID: " + getRetweetedUserId() + "\nRetweeted User Name: " + 
+        		getRetweetedUserName() + "\nTime Stamp (ms): " + getTimestampMs() ;
     	
-    	return null;
+    	return st;
     }
 }
-

@@ -1,7 +1,5 @@
 package upf.edu.lsds2018.model;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -93,23 +91,88 @@ public class SimplifiedTweet implements Serializable {
 		    private final Long retweetedUserId;     // [if retweeted] ('retweeted_status'->'user'->'id')
 		    private final String retweetedUserName; // [if retweeted] ('retweeted_status'->'user'->'name')
 		    private final long timestampMs;		    // seconds from epoch ('timestamp_ms')
-    	 */
-    	
-    	String json = jsonStr;
-    	Gson gson = new Gson();
-        SimplifiedTweet jo = gson.fromJson(json, SimplifiedTweet.class);
-        Optional<SimplifiedTweet> st;
-        
-        if(jo.getTweetId() != 0L && jo.getUserId() != 0L && jo.getFollowersCount() != 0L && jo.isRetweeted() != true && jo.isRetweeted() != false && jo.getTimestampMs() != 0L)
-        {
-        	st = Optional.ofNullable(jo);
+    	 */ 
+    	try {
+            JsonElement je = parser.parse(jsonStr);
+            JsonObject jo = je.getAsJsonObject();
+
+            // initialize variables
+            long tweetId;
+            String text = null;
+            long userId;
+            String userName = null;
+            long followersCount;
+            long timestampMs;
+            boolean isRetweeted = false;
+            Long retweetedUserId = null;
+            String retweetedUserName = null;
+
+            if (jo.has("id")) {
+                tweetId = jo.get("id").getAsLong();
+            } else {
+                return Optional.empty();
+            }
+
+            if (jo.has("text")) {
+                text = jo.get("text").getAsString();
+            } else {
+            	text = null;
+            }
+
+            if (jo.has("user")) {
+                JsonObject userObj = jo.get("user").getAsJsonObject(); // cast method
+                if (userObj.has("id")) {
+                    userId = userObj.get("id").getAsLong();
+                } else {
+                    return Optional.empty();
+                }
+                if (userObj.has("name")) {
+                    userName = userObj.get("name").getAsString();
+                } else {
+                    userName = null;
+                }
+                if (userObj.has("followers_count")) {
+                    followersCount = userObj.get("followers_count").getAsLong();
+                } else {
+                    return Optional.empty();
+                }
+            } else {
+                return Optional.empty();
+            }
+            
+            if (jo.has("timestamp_ms")) {
+                timestampMs = jo.get("timestamp_ms").getAsLong();
+            } else {
+                return Optional.empty();
+            }
+
+            if (jo.has("retweeted_status")) {
+                isRetweeted = true;
+                JsonObject retweetObj = jo.get("retweeted_status").getAsJsonObject();
+                if (retweetObj.has("user")) {
+                    JsonObject retweetUserObj = retweetObj.get("user").getAsJsonObject();
+                    if (retweetUserObj.has("id")) {
+                        retweetedUserId = retweetUserObj.get("id").getAsLong();
+                    } else {
+                    	retweetedUserId = null;
+                    }
+                    if (retweetUserObj.has("name")) {
+                        retweetedUserName = retweetUserObj.get("name").getAsString();
+                    } else {
+                    	retweetedUserName = null;
+                    }
+                } else {
+                    return Optional.empty();
+                }
+            }
+            
+            return Optional.of(new SimplifiedTweet(tweetId, text, userId, userName, followersCount, isRetweeted,
+                    retweetedUserId, retweetedUserName, timestampMs));
+            
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return Optional.empty();
         }
-        else
-        {
-        	st = Optional.empty();
-        }
-        
-        return st;
     }
 
     @Override

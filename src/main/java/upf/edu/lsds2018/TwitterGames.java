@@ -12,13 +12,20 @@ import java.util.Arrays;
 
 import static java.lang.Integer.max;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.*;
 
 public class TwitterGames {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException{
 
     	String inputDir = args[0];
-
+    	String outDir = args[1];
+    	
         //Create a SparkContext to initialize
         SparkConf conf = new SparkConf().setAppName("Twitter Games");
         JavaSparkContext sparkContext = new JavaSparkContext(conf);
@@ -27,7 +34,7 @@ public class TwitterGames {
 		JavaRDD<String> stringRDD = sparkContext.textFile(inputDir);
         JavaRDD<SimplifiedTweet> tweets = stringRDD.map(t -> SimplifiedTweet.fromJson(t).orElse(null)).filter(t -> t != null);
         		
-
+        
         // 2.1
         long numberOfTweets =  tweets.count(); //do something on tweets
         System.out.println("Total tweets: " + numberOfTweets);
@@ -64,10 +71,22 @@ public class TwitterGames {
         }).map(t->t._2);// do something on tweets
 
         JavaRDD<SimplifiedTweet> top10Followers = sparkContext.parallelize(byFollowers.take(10));// do something on the previous step
-
+        
         // Store here both outputs (the top10 and the overall list)
-        byFollowers.saveAsTextFile("output/byFollowers");
-        top10Followers.saveAsTextFile("output/top10Followers");
+        String finalDir = outDir+"/generalData.txt";
+        String generalData = "Total tweets: " + numberOfTweets + "\n" + "Original tweets ratio: " + numberOfOriginalTweets + "\n" + "Number of distinct users: " + uniqueUsers;
+
+        try {
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(outDir + "/generalData.txt"));
+			writer.write(generalData);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        byFollowers.saveAsTextFile(outDir+"/byFollowers");
+        top10Followers.saveAsTextFile(outDir+"/top10Followers");
     }
 }
 

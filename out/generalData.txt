@@ -1,0 +1,3 @@
+Total tweets: 98
+Original tweets ratio: 0.24489796
+Number of distinct users: 96

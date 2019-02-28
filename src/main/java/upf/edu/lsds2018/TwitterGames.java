@@ -77,7 +77,7 @@ public class TwitterGames {
         String generalData = "Total tweets: " + numberOfTweets + "\n" + "Original tweets ratio: " + numberOfOriginalTweets + "\n" + "Number of distinct users: " + uniqueUsers;
 
         try {
-        	BufferedWriter writer = new BufferedWriter(new FileWriter(outDir + "/generalData.txt"));
+        	BufferedWriter writer = new BufferedWriter(new FileWriter("generalData.txt"));
 			writer.write(generalData);
 			writer.close();
 		} catch (IOException e) {

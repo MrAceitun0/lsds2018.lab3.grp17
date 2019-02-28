@@ -16,8 +16,8 @@ bucket: https://s3.console.aws.amazon.com/s3/buckets/upf.edu.ldsd2018.lab3.grp17
 
 Section 2
 
-	1. How many tweets have been produced during the celebration?		
+	1. How many tweets have been produced during the celebration? 1217479		
 		
-	2. How many unique users have been tweeting during the celebration?
+	2. How many unique users have been tweeting during the celebration? 374069
 
-	3. What is the ratio of original (non-retweeted) tweets?
+	3. What is the ratio of original (non-retweeted) tweets? 0.35619918

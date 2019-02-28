@@ -1,3 +1,13 @@
+﻿# Lab 3 - Spark, Twitter, EMR - LSDS
+
+### Oriol Moron - 183953
+
+### Óscar Subirats - 183850
+
+### Sergi Olives - 193196
+
+Third assignment of Large Scaled Distributed Systems
+
 lsds2018.lab3.grp17
 
 bucket: https://s3.console.aws.amazon.com/s3/buckets/upf.edu.ldsd2018.lab3.grp17/?region=us-east-1&tab=overview
